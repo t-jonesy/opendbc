@@ -45,6 +45,43 @@ class TeslaCAN:
     values["DAS_controlChecksum"] = self.checksum(0x2b9, data[:7])
     return self.packer.make_can_msg("DAS_control", CANBUS.party, values)
 
+  def create_das_status(self, counter, status):
+    values = {s: status[s] for s in [
+      "DAS_statusChecksum",
+      "DAS_statusCounter",
+      "DAS_summonAvailable",
+      "DAS_autoLaneChangeState",
+      "DAS_autopilotHandsOnState",
+      "DAS_fleetSpeedState",
+      "DAS_laneDepartureWarning",
+      "DAS_csaState",
+      "DAS_sideCollisionInhibit",
+      "DAS_sideCollisionWarning",
+      "DAS_sideCollisionAvoid",
+      "DAS_summonRvsLeashReached",
+      "DAS_summonFwdLeashReached",
+      "DAS_autoparkWaitingForBrake",
+      "DAS_autoParked",
+      "DAS_autoparkReady",
+      "DAS_forwardCollisionWarning",
+      "DAS_heaterState",
+      "DAS_visionOnlySpeedLimit",
+      "DAS_summonClearedGate",
+      "DAS_summonObstacle",
+      "DAS_suppressSpeedWarning",
+      "DAS_fusedSpeedLimit",
+      "DAS_blindSpotRearRight",
+      "DAS_blindSpotRearLeft",
+      "DAS_autopilotState"
+    ]}
+
+    values["DAS_statusCounter"] = counter
+    values["DAS_autopilotState"] = 2
+
+    data = self.packer.make_can_msg("DAS_status", CANBUS.party, values)[1]
+    values["DAS_statusChecksum"] = self.checksum(0x39b, data[:7])
+    return self.packer.make_can_msg("DAS_status", CANBUS.party, values)
+
   def right_stalk_press(self, counter, position):
     # TODO: Implement CRC checksum instead of lookup table.
     if position == 1:  # half up

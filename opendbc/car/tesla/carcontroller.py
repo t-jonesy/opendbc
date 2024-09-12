@@ -42,11 +42,15 @@ class CarController(CarControllerBase):
 
     # Longitudinal control
     if self.CP.openpilotLongitudinalControl and self.frame % 2 == 0:
-      acc_state = CS.das_control["DAS_accState"]
+      acc_state = 4 if CC.longActive else 0
       target_accel = clip(actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
       target_speed = max(CS.out.vEgo + (target_accel * CarControllerParams.ACCEL_TO_SPEED_MULTIPLIER), 0)
       counter = CS.das_control["DAS_controlCounter"]
       can_sends.append(self.tesla_can.create_longitudinal_commands(acc_state, target_speed, target_accel, counter))
+
+    if self.frame % 20 == 0:
+      counter = int(CS.das_status["DAS_statusCounter"])
+      can_sends.append(self.tesla_can.create_das_status((counter + 1) % 16, CS.das_status))
 
     # Cancel on user steering override, since there is no steering torque blending
     if hands_on_fault:
