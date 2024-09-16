@@ -23,8 +23,8 @@ class CarInterface(CarInterfaceBase):
     ret.steerControlType = structs.CarParams.SteerControlType.angle
     ret.radarUnavailable = True
 
-    if candidate in [CAR.RIVIAN_R1S]:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_RIVIAN_LONG_CONTROL
-      ret.openpilotLongitudinalControl = True
+    # if False and candidate in [CAR.RIVIAN_R1S]:
+    #   ret.safetyConfigs[0].safetyParam |= Panda.FLAG_RIVIAN_LONG_CONTROL
+    ret.openpilotLongitudinalControl = False
 
     return ret
