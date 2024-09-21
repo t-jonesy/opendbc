@@ -1,12 +1,11 @@
 from opendbc.can.parser import CANParser
 from opendbc.car import structs
 from opendbc.car.interfaces import CarStateBase
-from opendbc.car.rivian.values import DBC, GEAR_MAP, BUTTONS
+from opendbc.car.rivian.values import DBC, GEAR_MAP
 
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
-    self.button_states = {button.event_type: False for button in BUTTONS}
 
     # Needed by carcontroller
     self.steering_control_counter = 0
@@ -48,18 +47,6 @@ class CarState(CarStateBase):
 
     # Gear
     ret.gearShifter = GEAR_MAP[int(cp.vl["VDM_PropStatus"]["VDM_Prndl_Status"])]
-
-    # Buttons
-    button_events = []
-    # for button in BUTTONS:
-    #   state = (cp.vl[button.can_addr][button.can_msg] in button.values)
-    #   if self.button_states[button.event_type] != state:
-    #     event = car.CarState.ButtonEvent.new_message()
-    #     event.type = button.event_type
-    #     event.pressed = state
-    #     button_events.append(event)
-    #   self.button_states[button.event_type] = state
-    ret.buttonEvents = button_events
 
     # Doors
     ret.doorOpen = False
