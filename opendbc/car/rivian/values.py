@@ -8,8 +8,6 @@ from opendbc.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
 
 Ecu = CarParams.Ecu
 
-Button = namedtuple('Button', ['event_type', 'can_addr', 'can_msg', 'values'])
-
 class CAR(Platforms):
   RIVIAN_R1S = PlatformConfig(
     [CarDocs("Rivian R1S", "All")],
@@ -45,17 +43,6 @@ GEAR_MAP = [
   structs.CarState.GearShifter.neutral,
   structs.CarState.GearShifter.drive,
 ]
-
-
-BUTTONS = [
-  Button(structs.CarState.ButtonEvent.Type.leftBlinker, "SCCM_leftStalk", "SCCM_turnIndicatorStalkStatus", [3, 4]),
-  Button(structs.CarState.ButtonEvent.Type.rightBlinker, "SCCM_leftStalk", "SCCM_turnIndicatorStalkStatus", [1, 2]),
-  Button(structs.CarState.ButtonEvent.Type.accelCruise, "VCLEFT_switchStatus", "VCLEFT_swcRightScrollTicks", list(range(1, 10))),
-  Button(structs.CarState.ButtonEvent.Type.decelCruise, "VCLEFT_switchStatus", "VCLEFT_swcRightScrollTicks", list(range(-9, 0))),
-  Button(structs.CarState.ButtonEvent.Type.cancel, "SCCM_rightStalk", "SCCM_rightStalkStatus", [1, 2]),
-  Button(structs.CarState.ButtonEvent.Type.resumeCruise, "SCCM_rightStalk", "SCCM_rightStalkStatus", [3, 4]),
-]
-
 
 class CarControllerParams:
   ANGLE_RATE_LIMIT_UP = AngleRateLimit(speed_bp=[0., 5., 15.], angle_v=[5., .8, .15])
