@@ -319,8 +319,8 @@ BO_ 530 VDM_Torque_Rear: 8 VDM
 BO_ 565 IndicatorLights: 8 XXX
  SG_ checksum : 0|8@1+ (1,0) [0|255] "" XXX
  SG_ counter : 8|4@1+ (1,0) [0|15] "" XXX
- SG_ TurnLightLeft : 40|1@0+ (1,0) [0|1] "" XXX
- SG_ TurnLightRight : 54|1@0+ (1,0) [0|1] "" XXX
+ SG_ TurnLightLeft : 40|2@0+ (1,0) [0|3] "" XXX
+ SG_ TurnLightRight : 54|2@0+ (1,0) [0|3] "" XXX
 
 BO_ 592 VDM_EcasStatus: 8 VDM
  SG_ VDM_EcasHeightFL : 7|8@0- (1,0) [-128|127] "mm" ACM

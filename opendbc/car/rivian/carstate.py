@@ -11,7 +11,7 @@ class CarState(CarStateBase):
     self.steering_control_counter = 0
     self.longitudinal_request_counter = 0
 
-  def update(self, cp, cp_cam, *_) -> structs.CarState:
+  def update(self, cp, cp_cam, cp_adas, *_) -> structs.CarState:
     ret = structs.CarState()
 
     # Vehicle speed
@@ -51,8 +51,8 @@ class CarState(CarStateBase):
     ret.doorOpen = False
 
     # Blinkers
-    ret.leftBlinker = False
-    ret.rightBlinker = False
+    ret.leftBlinker = cp_adas.vl["IndicatorLights"]["TurnLightLeft"] in (1, 2)
+    ret.rightBlinker = cp_adas.vl["IndicatorLights"]["TurnLightRight"] in (1, 2)
 
     # Seatbelt
     ret.seatbeltUnlatched = False # cp.vl["RCM_Status"]["RCM_Status_IND_WARN_BELT_DRIVER"] != 0
@@ -96,3 +96,11 @@ class CarState(CarStateBase):
     ]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], messages, 2)
+
+  @staticmethod
+  def get_adas_can_parser(CP):
+    messages = [
+      ("IndicatorLights", 10),
+    ]
+
+    return CANParser(DBC[CP.carFingerprint]['pt'], messages, 1)
