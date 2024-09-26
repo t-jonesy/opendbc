@@ -10,7 +10,7 @@ def checksum(data, poly, xor_output):
       crc &= 0xFF
   return crc ^ xor_output
 
-def create_steering_control(packer, frame, apply_steer, lkas):
+def create_steering(packer, frame, apply_steer, lkas):
   values = {
     "ACM_SteeringControl_Counter": frame % 15,
     "ACM_EacEnabled": 1 if lkas else 0,
@@ -22,7 +22,7 @@ def create_steering_control(packer, frame, apply_steer, lkas):
   values["ACM_SteeringControl_Checksum"] = checksum(data[1:], 0x1D, 0x41)
   return packer.make_can_msg("ACM_SteeringControl", 0, values)
 
-def create_longitudinal_commands(packer, frame, accel, enabled):
+def create_longitudinal(packer, frame, accel, enabled):
   values = {
     "ACM_longitudinalRequest_Counter": frame % 15,
     "ACM_AccelerationRequest": accel if enabled else 0,
@@ -34,3 +34,26 @@ def create_longitudinal_commands(packer, frame, accel, enabled):
   data = packer.make_can_msg("ACM_longitudinalRequest", 0, values)[1]
   values["ACM_longitudinalRequest_Checksum"] = checksum(data[1:], 0x1D, 0x12)
   return packer.make_can_msg("ACM_longitudinalRequest", 0, values)
+
+def create_vdm_adas_status(packer, vdm_adas_status, active):
+  values = {s: vdm_adas_status[s] for s in [
+    "VDM_AdasStatus_Checksum",
+    "VDM_AdasStatus_Counter",
+    "VDM_AdasDecelLimit",
+    "VDM_AdasDriverAccelPriorityStatu",
+    "VDM_AdasFaultStatus",
+    "VDM_AdasAccelLimit",
+    "VDM_AdasDriverModeStatus",
+    "VDM_AdasAccelRequest",
+    "VDM_AdasInterfaceStatus",
+    "VDM_AdasAccelRequestAcknowledged",
+    "VDM_AdasVehicleHoldStatus"
+  ]}
+
+  if active:
+    values["VDM_AdasDriverModeStatus"] = 1
+    values["VDM_AdasInterfaceStatus"] = 1
+
+  data = packer.make_can_msg("VDM_AdasSts", 0, values)[1]
+  values["VDM_AdasStatus_Checksum"] = checksum(data[1:], 0x1D, 0xD1)
+  return packer.make_can_msg("VDM_AdasSts", 2, values)

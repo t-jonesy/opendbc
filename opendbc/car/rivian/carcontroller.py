@@ -3,7 +3,7 @@ from opendbc.car.common.numpy_fast import clip
 from opendbc.can.packer import CANPacker
 from opendbc.car import apply_std_steer_angle_limits
 from opendbc.car.interfaces import CarControllerBase
-from opendbc.car.rivian.riviancan import create_steering_control, create_longitudinal_commands
+from opendbc.car.rivian.riviancan import create_steering, create_longitudinal, create_vdm_adas_status
 from opendbc.car.rivian.values import CarControllerParams
 
 
@@ -28,13 +28,13 @@ class CarController(CarControllerBase):
       apply_angle = CS.out.steeringAngleDeg
 
     self.apply_angle_last = apply_angle
-    can_sends.append(create_steering_control(self.packer, (CS.steering_control_counter + 1) % 15, apply_angle, CC.latActive))
+    can_sends.append(create_steering(self.packer, (CS.steering_control_counter + 1) % 15, apply_angle, CC.latActive))
 
     # Longitudinal control
     if self.CP.openpilotLongitudinalControl:
-      can_sends.append(
-        create_longitudinal_commands(self.packer, (CS.longitudinal_request_counter + 1) % 15, actuators.accel, CC.longActive))
+      can_sends.append(create_longitudinal(self.packer, (CS.longitudinal_request_counter + 1) % 15, actuators.accel, CC.longActive))
 
+    can_sends.append(create_vdm_adas_status(self.packer, CS.vdm_adas_status, CC.latActive))
 
     new_actuators = copy.copy(actuators)
     new_actuators.steeringAngleDeg = self.apply_angle_last

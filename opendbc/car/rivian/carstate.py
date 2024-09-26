@@ -1,3 +1,4 @@
+import copy
 from opendbc.can.parser import CANParser
 from opendbc.car import structs
 from opendbc.car.interfaces import CarStateBase
@@ -67,6 +68,7 @@ class CarState(CarStateBase):
     # Messages needed by carcontroller
     self.steering_control_counter = cp_cam.vl["ACM_SteeringControl"]["ACM_SteeringControl_Counter"]
     self.longitudinal_request_counter = cp_cam.vl["ACM_longitudinalRequest"]["ACM_longitudinalRequest_Counter"]
+    self.vdm_adas_status = copy.copy(cp.vl["VDM_AdasSts"])
 
     return ret
 
