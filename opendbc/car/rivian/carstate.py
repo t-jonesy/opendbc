@@ -11,6 +11,7 @@ class CarState(CarStateBase):
     # Needed by carcontroller
     self.steering_control_counter = 0
     self.longitudinal_request_counter = 0
+    self.acc_on = False
 
   def update(self, cp, cp_cam, cp_adas, *_) -> structs.CarState:
     ret = structs.CarState()
@@ -40,6 +41,7 @@ class CarState(CarStateBase):
     ret.steerFaultTemporary = False # "EPAS_Angle_Control_Cntr_Err", EPAS_Angle_Control_Crc_Err
 
     # Cruise state
+    self.acc_on = cp_cam.vl["ACM_Status"]["ACM_FeatureStatus"] == 1
     ret.cruiseState.enabled = cp_cam.vl["ACM_Status"]["ACM_FeatureStatus"] == 2
     ret.cruiseState.speed = 15 #cp.vl["ESPiB1"]["ESPiB1_VehicleSpeed"] # todo
     ret.cruiseState.available = True # cp.vl["VDM_AdasSts"]["VDM_AdasInterfaceStatus"] == 1
