@@ -24,6 +24,6 @@ class CarInterface(CarInterfaceBase):
     ret.radarUnavailable = True
 
     ret.safetyConfigs[0].safetyParam |= Panda.FLAG_RIVIAN_LONG_CONTROL
-    ret.openpilotLongitudinalControl = False
+    ret.openpilotLongitudinalControl = True
 
     return ret
