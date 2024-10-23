@@ -24,7 +24,7 @@ class CarController(CarControllerBase):
     can_sends = []
 
     # Temp disable steering on a hands_on_fault, and allow for user override
-    hands_on_fault = CS.steer_warning == "EAC_ERROR_HANDS_ON" and CS.hands_on_level >= 3
+    hands_on_fault = CS.hands_on_level >= 3
     lkas_enabled = CC.latActive and not hands_on_fault
 
     if self.frame % 2 == 0:
@@ -42,7 +42,7 @@ class CarController(CarControllerBase):
 
     # Longitudinal control
     if self.CP.openpilotLongitudinalControl and self.frame % 2 == 0:
-      acc_state = 4 if CC.longActive else 0
+      state = 4 if not hands_on_fault else 13  # 4=ACC_ON, 13=ACC_CANCEL_GENERIC_SILENT
       target_accel = clip(actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
       target_speed = max(CS.out.vEgo + (target_accel * CarControllerParams.ACCEL_TO_SPEED_MULTIPLIER), 0)
       counter = CS.das_control["DAS_controlCounter"]
