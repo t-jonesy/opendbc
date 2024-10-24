@@ -18,10 +18,10 @@ class CarInterface(CarInterfaceBase):
     params = Params()
     stock_acc = params.get_bool("StockTaccEnabledToggle")
     ret.safetyConfigs = [get_safety_config(structs.CarParams.SafetyModel.tesla)]
+    
     if not stock_acc:
-      flags |= Panda.FLAG_TESLA_LONG_CONTROL
+      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TESLA_LONG_CONTROL
     ret.openpilotLongitudinalControl = not stock_acc
-    ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TESLA_LONG_CONTROL
 
     ret.steerLimitTimer = 1.0
     ret.steerActuatorDelay = 0.25
